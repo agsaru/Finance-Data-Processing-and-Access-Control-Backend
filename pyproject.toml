@@ -5,5 +5,8 @@ build-backend = "setuptools.build_meta"
 name= Finance Data Processing and Access Control Backend
 dependencies = [
     "fastapi",
+    "sqlmodel",
+    "psycopg2-binary",
+    "python-dotenv",
 ]
 requires-python = ">=3.9"

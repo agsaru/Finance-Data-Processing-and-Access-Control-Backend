@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+[project]
+name= Finance Data Processing and Access Control Backend
+dependencies = [
+    "fastapi",
+]
+requires-python = ">=3.9"

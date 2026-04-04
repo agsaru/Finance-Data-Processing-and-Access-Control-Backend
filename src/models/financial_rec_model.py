@@ -6,11 +6,11 @@ class TransationType(str,Enum):
     expense="expense"
 
 class FinancialRecord(SQLModel,table=True):
-    __tablename__ = "financialrecords" 
+    __tablename__ = "financial_records" 
 
     id: int | None =Field(default=None, primary_key=True)
     amount:float
     type: TransationType
     category:str
     date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    user_id: int =Field(foreign_key="user.id")
+    user_id: int =Field(foreign_key="users.id")

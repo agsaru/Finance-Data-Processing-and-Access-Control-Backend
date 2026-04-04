@@ -6,6 +6,8 @@ class TransationType(str,Enum):
     expense="expense"
 
 class FinancialRecord(SQLModel,table=True):
+    __tablename__ = "financialrecords" 
+
     id: int | None =Field(default=None, primary_key=True)
     amount:float
     type: TransationType

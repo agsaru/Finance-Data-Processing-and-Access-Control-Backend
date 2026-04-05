@@ -17,4 +17,4 @@ class User(SQLModel,table=True):
     role: UserRole= Field(default=UserRole.viewer)
     password: str
     created_at: datetime= Field(default_factory=lambda: datetime.now(timezone.utc))
-    status: bool = True
+    status: bool = Field(default=True)

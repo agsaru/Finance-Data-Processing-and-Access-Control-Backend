@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel,Field
 from enum import Enum
 from datetime import datetime, timezone
-class TransationType(str,Enum):
+class TransactionType(str,Enum):
     income="income"
     expense="expense"
 
@@ -10,7 +10,7 @@ class FinancialRecord(SQLModel,table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     amount:float
-    type: TransationType
+    type: TransactionType
     category:str
     date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     user_id: int = Field(foreign_key="users.id")

@@ -13,7 +13,7 @@ def get_user_by_id(session: Session, user_id: int):
     return user
 
 def create_user_admin(session: Session, data: UserCreate):
-    existing_user = session.exec(select(User).where(User.email == data.email))
+    existing_user = session.exec(select(User).where(User.email == data.email)).first()
 
     if existing_user:
         raise ValueError("Email already exists")

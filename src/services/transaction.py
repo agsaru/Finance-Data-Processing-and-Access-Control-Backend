@@ -7,6 +7,7 @@ def create_record(session: Session, data: TransactionCreate, user_id: int):
         amount=data.amount,
         type=data.type,
         category=data.category,
+        description=data.description,
         date=data.date,
         user_id=user_id
     )
@@ -40,6 +41,9 @@ def update_record(session: Session, record: TransactionRecord, data: Transaction
 
     if data.category is not None:
         record.category = data.category
+        
+    if data.description is not None:
+        record.description = data.description
 
     if data.date is not None:
         record.date = data.date

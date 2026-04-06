@@ -20,3 +20,4 @@ class UserUpdate(BaseModel):
     name: str | None = None
     role: UserRole | None = None
     status: bool | None = None
+    password: str | None = None

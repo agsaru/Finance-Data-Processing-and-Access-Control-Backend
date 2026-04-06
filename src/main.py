@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from models.user_model import User
-from models.financial_rec_model import FinancialRecord
-from database import create_db_and_tables
+from models.user import User
+from models.transaction import TransactionRecord
+from config.database import create_db_and_tables
+from routes.auth import router as auth_router
+from routes.user import router as user_router
+from routes.transaction import router as transaction_router
+from routes.dashboard import router as dashboard_router
+
 app=FastAPI()
 
 app.add_middleware(
@@ -18,7 +23,10 @@ def on_startup():
     create_db_and_tables()
     print("Database connected")
 
-
+app.include_router(user_router)
+app.include_router(auth_router)
+app.include_router(transaction_router)
+app.include_router(dashboard_router)
 @app.get("/")
 async def home():
     return {"message": "Hello World"}

@@ -5,12 +5,13 @@ class TransactionType(str,Enum):
     income="income"
     expense="expense"
 
-class FinancialRecord(SQLModel,table=True):
+class TransactionRecord(SQLModel,table=True):
     __tablename__ = "financial_records" 
 
     id: int | None = Field(default=None, primary_key=True)
     amount:float
     type: TransactionType
     category:str
+    description: str | None = Field(default=None)
     date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     user_id: int = Field(foreign_key="users.id")

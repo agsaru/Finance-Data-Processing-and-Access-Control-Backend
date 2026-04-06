@@ -28,7 +28,7 @@ def login(data: LoginRequest, session: SessionDep):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not user.is_active:
+    if not user.status:
         raise HTTPException(status_code=403, detail="User is inactive")
 
     token = generate_token(user)

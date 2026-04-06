@@ -8,6 +8,15 @@ class TransactionCreate(BaseModel):
     category: str
     date: datetime | None = None
 
+class TransactionRead(BaseModel):
+    id: int
+    amount: float
+    type: TransactionType
+    category: str
+    description: str | None = None
+    date: datetime
+    user_id: int
+    
 class TransactionUpdate(BaseModel):
     amount: float | None = None
     type: TransactionType | None = None

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session
 from config.database import SessionDep
 from config.security import get_current_user
-from schemas.transaction import FinancialCreate, FinancialRead, FinancialUpdate
+from schemas.transaction import TransactionCreate, TransactionRead, TransactionUpdate
 from services.transaction import (
     create_record,
     get_records,
@@ -13,17 +13,16 @@ from services.transaction import (
 
 router = APIRouter(prefix="/financial", tags=["Financial"])
 
-
-@router.post("/", response_model=FinancialRead)
-def create_financial_record(data: FinancialCreate,session: SessionDep,user = Depends(get_current_user)):
+@router.post("/", response_model=TransactionRead)
+def create_financial_record(data: TransactionCreate, session: SessionDep, user = Depends(get_current_user)):
     return create_record(session, data, user.id)
 
-@router.get("/", response_model=list[FinancialRead])
-def read_records(session: SessionDep,user = Depends(get_current_user), type: str | None = Query(default=None),category: str | None = Query(default=None)):
+@router.get("/", response_model=list[TransactionRead])
+def read_records(session: SessionDep, user = Depends(get_current_user), type: str | None = Query(default=None), category: str | None = Query(default=None)):
     return get_records(session, user.id, type, category)
 
-@router.get("/{record_id}", response_model=FinancialRead)
-def read_record(record_id: int,session: SessionDep,user = Depends(get_current_user)):
+@router.get("/{record_id}", response_model=TransactionRead)
+def read_record(record_id: int, session: SessionDep, user = Depends(get_current_user)):
     record = get_record_by_id(session, record_id)
 
     if not record:
@@ -35,8 +34,8 @@ def read_record(record_id: int,session: SessionDep,user = Depends(get_current_us
     return record
 
 
-@router.patch("/{record_id}", response_model=FinancialRead)
-def update_financial_record(record_id: int,data: FinancialUpdate,session: SessionDep,user = Depends(get_current_user)):
+@router.patch("/{record_id}", response_model=TransactionRead)
+def update_financial_record(record_id: int, data: TransactionUpdate, session: SessionDep, user = Depends(get_current_user)):
     record = get_record_by_id(session, record_id)
 
     if not record:
@@ -49,7 +48,7 @@ def update_financial_record(record_id: int,data: FinancialUpdate,session: Sessio
 
 
 @router.delete("/{record_id}")
-def delete_financial_record(record_id: int,session: SessionDep,user = Depends(get_current_user)):
+def delete_financial_record(record_id: int, session: SessionDep, user = Depends(get_current_user)):
     record = get_record_by_id(session, record_id)
 
     if not record:

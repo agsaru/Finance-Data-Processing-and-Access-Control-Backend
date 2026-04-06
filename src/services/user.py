@@ -38,8 +38,8 @@ def update_user(session: Session, user: User, data: UserUpdate):
     if data.role is not None:
         user.role = data.role
 
-    if data.is_active is not None:
-        user.is_active = data.is_active
+    if data.status is not None:
+        user.status = data.status
 
     if data.password is not None:
         user.password = hash_password(data.password)

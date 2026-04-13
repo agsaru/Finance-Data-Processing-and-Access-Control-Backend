@@ -9,7 +9,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 @router.get("/summary")
 def summary(session: SessionDep, user = Depends(get_current_user)):
-    return get_summary(session, user.id)
+    return get_summary(session, user.id, user.role)
 
 @router.get("/category-summary")
 def category_summary(session: SessionDep, user = Depends(get_current_user)):

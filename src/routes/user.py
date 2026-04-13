@@ -31,14 +31,14 @@ def get_user(user_id: int,session: SessionDep,current_user = Depends(get_current
     return user
 
 @router.post("/", response_model=UserRead)
-def create_user(data: UserCreate,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
+def create_user(data: UserCreate,session: SessionDep,user = Depends(require_roles([UserRole.admin]))):
     try:
         return create_user_admin(session, data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.patch("/{user_id}", response_model=UserRead)
-def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
+def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = Depends(require_roles([UserRole.admin]))):
     db_user = get_user_by_id(session, user_id)
 
     if not db_user:
@@ -48,7 +48,7 @@ def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = D
 
 
 @router.delete("/{user_id}")
-def delete_user_route(user_id: int,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
+def delete_user_route(user_id: int,session: SessionDep,user = Depends(require_roles([UserRole.admin]))):
     db_user = get_user_by_id(session, user_id)
 
     if not db_user:

@@ -40,8 +40,8 @@ def authenticate_user(session: Session, data: LoginRequest):
 
 def generate_token(user: User):
     token_data = {
-        "sub": user.id,
-        "role": user.role
+        "sub":str(user.id),
+        "role":user.role
     }
 
     return create_access_token(token_data)

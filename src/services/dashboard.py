@@ -1,21 +1,18 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from models.transaction import TransactionRecord, TransactionType
-from collections import defaultdict
-
 
 def get_summary(session: Session, user_id: int):
-    records = session.exec(
-        select(TransactionRecord).where(TransactionRecord.user_id == user_id)
-    ).all()
+    records = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
+        TransactionRecord.user_id == user_id,
+        TransactionRecord.type == TransactionType.income
+    )
+    total_income = session.exec(records).one()
 
-    total_income = 0
-    total_expense = 0
-
-    for r in records:
-        if r.type == TransactionType.income:
-            total_income += r.amount
-        else:
-            total_expense += r.amount
+    expense = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
+        TransactionRecord.user_id == user_id,
+        TransactionRecord.type == TransactionType.expense
+    )
+    total_expense = session.exec(expense).one()
 
     return {
         "total_income": total_income,
@@ -24,17 +21,20 @@ def get_summary(session: Session, user_id: int):
     }
 
 def get_category_summary(session: Session, user_id: int):
-    records = session.exec(
-        select(TransactionRecord).where(TransactionRecord.user_id == user_id)
-    ).all()
-
-    category_data = defaultdict(float)
-
-    for r in records:
-        category_data[r.category] += r.amount
-
-    return category_data
+    records = (
+        select(TransactionRecord.category, func.sum(TransactionRecord.amount))
+        .where(TransactionRecord.user_id == user_id)
+        .group_by(TransactionRecord.category)
+    )
+    
+    results = session.exec(records).all()
+    return {category: amount for category, amount in results}
 
 def get_recent_transactions(session: Session, user_id: int, limit: int = 5):
-    records = session.exec(select(TransactionRecord).where(TransactionRecord.user_id == user_id).order_by(TransactionRecord.date.desc()).limit(limit)).all()
-    return records
+    records = (
+        select(TransactionRecord)
+        .where(TransactionRecord.user_id == user_id)
+        .order_by(TransactionRecord.date.desc())
+        .limit(limit)
+    )
+    return session.exec(records).all()

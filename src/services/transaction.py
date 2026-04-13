@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
 from models.transaction import TransactionRecord
 from schemas.transaction import TransactionCreate, TransactionUpdate
-
+from models.user import UserRole
 def create_record(session: Session, data: TransactionCreate, user_id: int):
     record = TransactionRecord(
         amount=data.amount,
@@ -18,9 +18,10 @@ def create_record(session: Session, data: TransactionCreate, user_id: int):
 
     return record
 
-def get_records(session: Session, user_id: int, type=None, category=None):
+def get_records(session: Session, user_id: int,user_role: UserRole, type=None, category=None):
     query = select(TransactionRecord).where(TransactionRecord.user_id == user_id)
-
+    if user_role != UserRole.admin:
+        query = query.where(TransactionRecord.user_id == user_id)
     if type:
         query = query.where(TransactionRecord.type == type)
 

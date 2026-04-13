@@ -16,11 +16,13 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("/", response_model=list[UserRead])
-def get_users(session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
+def get_users(session: SessionDep,user = Depends(require_roles([UserRole.admin]))):
     return get_all_users(session)
 
 @router.get("/{user_id}", response_model=UserRead)
 def get_user(user_id: int,session: SessionDep,current_user = Depends(get_current_user)):
+    if current_user.id != user_id and current_user.role != UserRole.admin:
+        raise HTTPException(status_code=403, detail="Not authorized to view this user")
     user = get_user_by_id(session, user_id)
 
     if not user:

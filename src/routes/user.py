@@ -3,6 +3,7 @@ from sqlmodel import Session
 from config.database import SessionDep
 from config.security import require_roles, get_current_user
 from schemas.user import UserCreate, UserRead, UserUpdate
+from models.user import UserRole
 from services.user import (
     get_all_users,
     get_user_by_id,
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("/", response_model=list[UserRead])
-def get_users(session: SessionDep,user = Depends(require_roles(["admin"]))):
+def get_users(session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
     return get_all_users(session)
 
 @router.get("/{user_id}", response_model=UserRead)
@@ -28,14 +29,14 @@ def get_user(user_id: int,session: SessionDep,current_user = Depends(get_current
     return user
 
 @router.post("/", response_model=UserRead)
-def create_user(data: UserCreate,session: SessionDep,user = Depends(require_roles(["admin"]))):
+def create_user(data: UserCreate,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
     try:
         return create_user_admin(session, data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.patch("/{user_id}", response_model=UserRead)
-def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = Depends(require_roles(["admin"]))):
+def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
     db_user = get_user_by_id(session, user_id)
 
     if not db_user:
@@ -45,7 +46,7 @@ def update_user_route(user_id: int,data: UserUpdate,session: SessionDep,user = D
 
 
 @router.delete("/{user_id}")
-def delete_user_route(user_id: int,session: SessionDep,user = Depends(require_roles(["admin"]))):
+def delete_user_route(user_id: int,session: SessionDep,user = Depends(require_roles([UserRole.admin, UserRole.analyst]))):
     db_user = get_user_by_id(session, user_id)
 
     if not db_user:

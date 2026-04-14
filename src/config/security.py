@@ -24,13 +24,9 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
-
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security),session: Session = Depends(get_session)):
     token = credentials.credentials
@@ -50,8 +46,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
     if not user.status:
         raise HTTPException(status_code=403, detail="User is inactive")
-
     return user
+
 def require_roles(allowed_roles: list):
     def role_checker(user: User = Depends(get_current_user)):
         if user.role not in allowed_roles:

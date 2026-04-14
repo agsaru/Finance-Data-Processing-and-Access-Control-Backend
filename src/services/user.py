@@ -18,12 +18,7 @@ def create_user_admin(session: Session, data: UserCreate):
     if existing_user:
         raise ValueError("Email already exists")
 
-    user = User(
-        name=data.name,
-        email=data.email,
-        password=hash_password(data.password),
-        role=data.role
-    )
+    user = User(name=data.name,email=data.email,password=hash_password(data.password),role=data.role)
 
     session.add(user)
     session.commit()

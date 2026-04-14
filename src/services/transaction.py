@@ -37,16 +37,12 @@ def get_record_by_id(session: Session, record_id: int):
 def update_record(session: Session, record: TransactionRecord, data: TransactionUpdate):
     if data.amount is not None:
         record.amount = data.amount
-
     if data.type is not None:
         record.type = data.type
-
     if data.category is not None:
         record.category = data.category
-        
     if data.description is not None:
         record.description = data.description
-
     if data.date is not None:
         record.date = data.date
 

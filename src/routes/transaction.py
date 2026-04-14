@@ -29,9 +29,6 @@ def read_record(record_id: int, session: SessionDep, user = Depends(require_role
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
 
-    if record.user_id != user.id and user.role != UserRole.admin:
-        raise HTTPException(status_code=403, detail="Not authorized")
-
     return record
 
 
@@ -41,10 +38,6 @@ def update_financial_record(record_id: int, data: TransactionUpdate, session: Se
 
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
-
-    if record.user_id != user.id and user.role != UserRole.admin:
-        raise HTTPException(status_code=403, detail="Not authorized")
-
     return update_record(session, record, data)
 
 
@@ -54,9 +47,6 @@ def delete_financial_record(record_id: int, session: SessionDep, user = Depends(
 
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
-
-    if record.user_id != user.id and user.role != UserRole.admin:
-        raise HTTPException(status_code=403, detail="Not authorized")
 
     delete_record(session, record)
     return {"message": "Record deleted"}

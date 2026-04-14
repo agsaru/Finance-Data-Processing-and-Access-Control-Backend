@@ -13,8 +13,8 @@ def summary(session: SessionDep, user = Depends(get_current_user)):
 
 @router.get("/category-summary")
 def category_summary(session: SessionDep, user = Depends(get_current_user)):
-    return get_category_summary(session, user.id)
+    return get_category_summary(session, user.id,user.role)
 
 @router.get("/recent", response_model=list[TransactionRead])
 def recent_transactions(session: SessionDep, user = Depends(get_current_user)):
-    return get_recent_transactions(session, user.id)
+    return get_recent_transactions(session, user.id,user.role)

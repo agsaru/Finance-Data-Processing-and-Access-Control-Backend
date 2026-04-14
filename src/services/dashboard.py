@@ -3,11 +3,9 @@ from models.transaction import TransactionRecord, TransactionType
 from models.user import UserRole
 def get_summary(session: Session, user_id: int,role: UserRole):
     income = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
-        TransactionRecord.user_id == user_id,
         TransactionRecord.type == TransactionType.income
     )
     expense = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
-        TransactionRecord.user_id == user_id,
         TransactionRecord.type == TransactionType.expense
     )
     if role != UserRole.admin:
@@ -22,21 +20,15 @@ def get_summary(session: Session, user_id: int,role: UserRole):
         "net_balance": total_income - total_expense
     }
 
-def get_category_summary(session: Session, user_id: int):
-    records = (
-        select(TransactionRecord.category, func.sum(TransactionRecord.amount))
-        .where(TransactionRecord.user_id == user_id)
-        .group_by(TransactionRecord.category)
-    )
-    
+def get_category_summary(session: Session, user_id: int,role: UserRole):
+    records= select(TransactionRecord.category, func.sum(TransactionRecord.amount)).group_by(TransactionRecord.category)
+    if role != UserRole.admin:
+        records = records.where(TransactionRecord.user_id == user_id)
     results = session.exec(records).all()
     return {category: amount for category, amount in results}
 
-def get_recent_transactions(session: Session, user_id: int, limit: int = 5):
-    records = (
-        select(TransactionRecord)
-        .where(TransactionRecord.user_id == user_id)
-        .order_by(TransactionRecord.date.desc())
-        .limit(limit)
-    )
+def get_recent_transactions(session: Session, user_id: int,role:UserRole, limit: int = 5):
+    records = select(TransactionRecord).order_by(TransactionRecord.date.desc()).limit(limit)
+    if role != UserRole.admin:
+        records = records.where(TransactionRecord.user_id == user_id)
     return session.exec(records).all()

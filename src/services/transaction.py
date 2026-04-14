@@ -8,9 +8,10 @@ def create_record(session: Session, data: TransactionCreate, user_id: int):
         type=data.type,
         category=data.category,
         description=data.description,
-        date=data.date,
         user_id=user_id
     )
+    if data.date is not None:
+        record.date = data.date
 
     session.add(record)
     session.commit()
@@ -19,7 +20,7 @@ def create_record(session: Session, data: TransactionCreate, user_id: int):
     return record
 
 def get_records(session: Session, user_id: int,user_role: UserRole, type=None, category=None):
-    query = select(TransactionRecord).where(TransactionRecord.user_id == user_id)
+    query = select(TransactionRecord)
     if user_role != UserRole.admin:
         query = query.where(TransactionRecord.user_id == user_id)
     if type:

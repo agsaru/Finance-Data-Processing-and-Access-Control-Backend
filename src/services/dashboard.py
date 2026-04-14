@@ -1,8 +1,8 @@
 from sqlmodel import Session, select, func
 from models.transaction import TransactionRecord, TransactionType
-
-def get_summary(session: Session, user_id: int,role: str):
-    records = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
+from models.user import UserRole
+def get_summary(session: Session, user_id: int,role: UserRole):
+    income = select(func.coalesce(func.sum(TransactionRecord.amount), 0)).where(
         TransactionRecord.user_id == user_id,
         TransactionRecord.type == TransactionType.income
     )
@@ -10,12 +10,12 @@ def get_summary(session: Session, user_id: int,role: str):
         TransactionRecord.user_id == user_id,
         TransactionRecord.type == TransactionType.expense
     )
-    if role != "admin":
-        income_query = income_query.where(TransactionRecord.user_id == user_id)
-        expense_query = expense_query.where(TransactionRecord.user_id == user_id)
+    if role != UserRole.admin:
+        income = income.where(TransactionRecord.user_id == user_id)
+        expense = expense.where(TransactionRecord.user_id == user_id)
 
-    total_income = session.exec(income_query).one()
-    total_expense = session.exec(expense_query).one()
+    total_income = session.exec(income).one()
+    total_expense = session.exec(expense).one()
     return {
         "total_income": total_income,
         "total_expense": total_expense,

@@ -1,6 +1,6 @@
 # Finance Data Processing and Access Control Backend
 
-A robust FastAPI-based backend service for managing financial transactions, user accounts, and role-based access control (RBAC). It features secure JWT authentication, data filtering based on user roles, and analytical dashboard endpoints.
+A FastAPI based backend service for managing financial transactions, user accounts, and role based access control. It features secure JWT authentication, data filtering based on user roles, and analytical dashboard endpoints.
 
 ## Features
 
@@ -31,7 +31,7 @@ A robust FastAPI-based backend service for managing financial transactions, user
 
 1. **Clone the repository and navigate to the project directory:**
    ```bash
-   cd finance-backend
+   cd Finance-Data-Processing-and-Access-Control-Backend
    ```
 
 2. **Create and activate a virtual environment (recommended):**
@@ -84,7 +84,7 @@ Once the server is running, FastAPI automatically generates interactive API docu
     ├── main.py                 # Application entry point & router aggregation
     ├── config/
     │   ├── database.py         # DB engine and session management
-    │   └── security.py         # JWT verification, hashing, and RBAC dependencies
+    │   └── security.py         # JWT verification, hashing
     ├── models/
     │   ├── transaction.py      # SQLModel for Financial Records
     │   └── user.py             # SQLModel for Users
